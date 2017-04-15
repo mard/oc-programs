@@ -419,6 +419,7 @@ function fire()
   for k,v in ipairs(sides) do
     laControl.setOutput(k-1, 0)
   end
+  check()
 end
 
 function startTimer()
