@@ -44,7 +44,7 @@ end
 function TuiElement:refresh()
   for k,v in pairs(self.items) do self.items[k] = nil end
   self:addChilds()
-  self:draw()
+  --self:draw()
 end
 
 function TuiElement:anyParentInvisible()
