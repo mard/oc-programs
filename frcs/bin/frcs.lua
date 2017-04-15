@@ -131,11 +131,11 @@ assert(filesystem.exists(iniPath),
 settings = inifile.parse('/etc/frcs.conf')
 
 if settings.redstone.address_redstone_amplifier then
-  local laControl = component.proxy(component.get(settings.redstone.address_redstone_amplifier))
+  laControl = component.proxy(component.get(settings.redstone.address_redstone_amplifier))
 end
 
 if settings.redstone.address_redstone_amplifier_power then
-  local laControlPower = component.proxy(component.get(settings.redstone.address_redstone_amplifier_power))
+  laControlPower = component.proxy(component.get(settings.redstone.address_redstone_amplifier_power))
 end
 
 local name = 'Fusion Reactor Control System' --  1.0 by mard
@@ -415,7 +415,7 @@ function fire()
   for k,v in ipairs(sides) do
     laControl.setOutput(k, 255)
   end
-  os.sleep(2)
+  os.sleep(0.1)
   for k,v in ipairs(sides) do
     laControl.setOutput(k, 0)
   end
