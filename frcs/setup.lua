@@ -43,8 +43,8 @@ local files =
   },
   {
     'https://raw.githubusercontent.com/mard/oc-programs/master/frcs/usr/man/frcs',
-    'usr/frcs',
-    '/usr/frcs'
+    'usr/man/frcs',
+    '/usr/man/frcs'
   },
 }
 
