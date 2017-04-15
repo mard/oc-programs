@@ -7,6 +7,8 @@ local sides = require('sides')
 local term = require('term')
 local gpu = term.gpu()
 
+version = '0.1'
+
 genericSharedLibraryError = 'Unable to find shared library.'
 genericInstallError = ' ' .. 
 'It appears that installation is invalid - have you run ' ..
@@ -359,7 +361,7 @@ function about()
   local aboutCloseButton = Button(29,14,10,1,'OK', mutil.pal2hex(colors.white), mutil.pal2hex(colors.lightblue))
 
   local aLabel1 = Label(3, 3, 'Fusion Reactor Control System')
-  local aLabel2 = Label(3, 5, 'version 1.0')
+  local aLabel2 = Label(3, 5, 'version ' .. version)
   local aLabel3 = Label(3, 7, 'github.com/mard/oc-programs', mutil.pal2hex(colors.lightblue))
   local aLabel4 = Label(3, 9, 'For detailed user\'s manual')
   local aLabel5 = Label(3, 10, 'run "man frcs" in system console.')

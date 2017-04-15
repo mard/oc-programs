@@ -6,7 +6,7 @@ local initialBackground = gpu.getBackground()
 
 local mutil =
 {
-	_VERSION = "mutil alpha",
+	_VERSION = "mutil test",
 	_DESCRIPTION = "General Utility library for OpenComputers",
 	_URL = "",
 	_LICENSE = [[]]

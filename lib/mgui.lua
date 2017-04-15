@@ -3,7 +3,7 @@
 
 local mgui =
 {
-	_VERSION = "mardgui alpha",
+	_VERSION = "mardgui test",
 	_DESCRIPTION = "Graphical User Interface library for OpenComputers",
 	_URL = "",
 	_LICENSE = [[]]
