@@ -15,7 +15,7 @@ DESCRIPTION
   - Displays details of Reactor Chamber
   - Allows to block Laser Amplifier fire when it's fully charged
 
-  frcs can be configured by editing /etc/frcs.conf:
+  frcs must be configured by editing /etc/frcs.conf by typing:
 
   edit /etc/frcs.conf
 
@@ -25,8 +25,13 @@ REPORTING BUGS
   Bugs, issues, suggestions should be reported at: <https://github.com/mard/oc-programs>.
 
 COPYRIGHT
-  frcs is released into public domain by the copyright holder under WTFPL.
+  frcs source code is released into public domain by the copyright holder under WTFPL.
 
-THIRD-PARTY SOFTWARE
-  30log
-  inifile
+THIRD-PARTY LIBRARIES
+  30log:
+    framework for object-orientation in Lua
+    <https://yonaba.github.io/30log/>
+  inifile:
+    simple, complete ini parser for lua
+    <http://docs.bartbes.com/inifile>
+
