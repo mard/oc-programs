@@ -40,7 +40,12 @@ local files =
     'https://raw.githubusercontent.com/mard/oc-programs/master/lib/ext/inifile.lua',
     '../lib/ext/inifile.lua',
     '/lib/inifile.lua'
-  }
+  },
+  {
+    'https://raw.githubusercontent.com/mard/oc-programs/master/frcs/usr/frcs',
+    'usr/frcs',
+    '/usr/frcs'
+  },
 }
 
 print('Starting installation...')
