@@ -9,56 +9,13 @@ local mgui =
 	_LICENSE = [[]]
 }
 
-local class = require('ext/30log')
+local class = require('30log')
+
+package.loaded.mutil = nil
+local mutil = require('mutil')
+
 local component = require('component')
 local gpu = component.gpu
-
-local initialForeground = gpu.getForeground()
-local initialBackground = gpu.getBackground()
-local initialDepth = gpu.getDepth()
-
-function setColor(color, f)
-  if not color then
-    return
-  end
-  local palette = false
-  if gpu.getDepth() == 1 then
-    return
-  elseif gpu.getDepth() == 4 then
-    if color > 15 then
-      --return
-    end
-    --palette = true
-  end
-  f(color, palette)
-end
-
-local palette = { 0xFFFFFF, 0xFFCC33, 0xCC66CC, 0x6699FF,
-      0xFFFF33, 0x33CC33, 0xFF6699, 0x333333,
-      0xCCCCCC, 0x336699, 0x9933CC, 0x333399,
-      0x663300, 0x336600, 0xFF3333, 0x000000 }
-
-function pal2hex(paletteColor)
-  if paletteColor and paletteColor <= 16 then
-    return palette[paletteColor+1]
-  end
-end
-
-function setForeground(fg, palette)
-  gpu.setForeground(fg, palette)
-end
-
-function setBackground(bg, palette)
-  gpu.setBackground(bg, palette)
-end
-
-function resetForeground()
-  gpu.setForeground(initialForeground)
-end
-
-function resetBackground()
-  gpu.setBackground(initialBackground)
-end
 
 local TuiElement = class('TuiElement',
   {
@@ -104,19 +61,12 @@ end
 
 local Locatable = TuiElement:extend('Locatable',
   {
-    positionAbsolute = false,
-    --x = self.parent == nil and x or self.parent.x,
-    --y = self.parent == nil and y or self.parent.y
     x = 0,
     y = 0
   }
 )
 
 function Locatable:add(locatable)
-  --if not class.isInstance(self) then
-  --  return
-  --end
-
   TuiElement:add(self, locatable)
 
   locatable.x = locatable.x + self.x-1
@@ -149,17 +99,17 @@ local Colorable = class('Colorable',
 )
 
 function Colorable.setColors(self)
-  setColor(self.fg, setForeground)
-  setColor(self.bg, setBackground)
+  mutil.setColor(self.fg, mutil.setForeground)
+  mutil.setColor(self.bg, mutil.setBackground)
 end
 
 function Colorable.resetColors(self)
   if self.parent then
-    setColor(self.parent.fg, setForeground)
-    setColor(self.parent.bg, setBackground)
+    mutil.setColor(self.parent.fg, mutil.setForeground)
+    mutil.setColor(self.parent.bg, mutil.setBackground)
   else
-    resetForeground()
-    resetBackground()
+    mutil.resetForeground()
+    mutil.resetBackground()
   end
 end
 
@@ -232,13 +182,13 @@ local Shaded = class('Shaded',
 
 function Shaded.drawShade(self)
   local pfg, pbg = self.fg, self.bg
-  setColor(0x000000, setForeground)
-  setColor(self.parent.bg, setBackground)
+  mutil.setColor(0x000000, mutil.setForeground)
+  mutil.setColor(self.parent.bg, mutil.setBackground)
   gpu.fill(self.x + 1, self.y + self.h, self.w, 1, '▀')
   gpu.set(self.x + self.w, self.y, '▄')
   gpu.fill(self.x + self.w, self.y + 1, 1, self.h - 1, '█')
-  setColor(pfg, setForeground)
-  setColor(pbg, setBackground)
+  mutil.setColor(pfg, mutil.setForeground)
+  mutil.setColor(pbg, mutil.setBackground)
 end
 
 Box = Alignable:extend('Box'):with(Colorable, Touchable)
@@ -294,12 +244,12 @@ function Label:draw()
   else
     --draw characters one by one, preserving background underneath.
     if self.class:includes(Colorable) then
-    setColor(self.fg, setForeground)
+    mutil.setColor(self.fg, mutil.setForeground)
     end
     for i = 1, #self.text do
       local c = self.text:sub(i,i)
       local _, _, _, _, ubg = gpu.get(self.x + i - 1, self.y)
-      setColor(pal2hex(ubg) ,setBackground)
+      mutil.setColor(mutil.pal2hex(ubg) ,mutil.setBackground)
       gpu.set(self.x + i - 1, self.y, c)
     end
   end
@@ -329,20 +279,24 @@ function FlatButton:init(x, y, w, h, text, fg, bg)
 end
 
 function FlatButton.addChilds(self)
-  local label = Label(1, math.ceil(self.h/2), self.text, pal2hex(self.fg))
+  local label = Label(1, math.ceil(self.h/2), self.text, mutil.pal2hex(self.fg))
   self:add(label)
   label:alignCenter()
 end
 
 function FlatButton:disable()
-  self.disabled = true
-  self.tempfg, self.tempbg = self.fg, self.bg
-  self.fg, self.bg = self.dfg, self.dbg
+  if not self.disabled then
+    self.disabled = true
+    self.tempfg, self.tempbg = self.fg, self.bg
+    self.fg, self.bg = self.dfg, self.dbg
+  end
 end
 
 function FlatButton:enable()
-  self.disabled = false
-  self.fg, self.bg = self.tempfg, self.tempbg
+  if self.disabled then
+    self.disabled = false
+    self.fg, self.bg = self.tempfg, self.tempbg
+  end
 end
 
 function Button:init(...)
@@ -375,23 +329,21 @@ ProgressBar = Box:extend('ProgressBar',
   }
 ):with(Shaded, SubItems)
 
-function ProgressBar:init(x, y, w, h, value, min, max, unit, name, fg, bg)
-  self.x, self.y, self.w, self.h, self.value, self.min, self.max, self.unit, self.name, self.fg, self.bg = x, y, w, h, value, min, max, unit, name, fg, bg
+function ProgressBar:init(x, y, w, h, value, min, max, unit, name, threshold, fg, bg)
+  self.x, self.y, self.w, self.h, self.value, self.min, self.max, self.unit, self.name, self.threshold, self.fg, self.bg = x, y, w, h, value, min, max, unit, name, threshold, fg, bg
 end
 
 function ProgressBar.addChilds(self)
-  --width is 20.
-  --from 100 to 200 - if value is 175,  then
-  --100-100, 200-100, 175-100 = 0, 100, 75 - checks out.
-  --so min = 0, max - min, value - min.
-  --then
-  --new value/max = 0.75
-  -- then 0.75 * self.width.
   local bar = Box(1, 1, self:calculateRealValue(), self.h, self.fg)
-  --print(self:calculatePercentage())
-  local percent = Label(2, 2, tostring(self:calculatePercentage()) .. '%', 0xFFFFFF)
-  local name = Label(2, 2, self.name, 0xFFFFFF)
-  local progress = Label(2, 2, tostring(round(self.value, 3)) .. "/" .. tostring(self.max) .. " " .. self.unit, 0xFFFFFF)
+  local percent = Label(2, math.ceil(self.h/2), tostring(self:calculatePercentage()) .. '%', 0xFFFFFF)
+  local name = Label(2, math.ceil(self.h/2), self.name, 0xFFFFFF)
+
+  pMax, pUnit, pRate = mutil.prefixize(self.max, self.threshold)
+  pValue = self.value / pRate
+
+  local progress = Label(2, math.ceil(self.h/2), tostring(mutil.round(pValue, 3)) .. "/" .. tostring(mutil.round(pMax, 3)) .. " " .. pUnit .. self.unit, 0xFFFFFF)
+
+  --local progress = Label(2, 2, tostring(mutil.round(pValue, 3)))
 
   percent.transparent = true
   name.transparent = true
@@ -419,14 +371,8 @@ function ProgressBar:calculateRatio()
 end
 
 function ProgressBar:calculatePercentage()
-  return round(self:calculateRatio() * 100, 1)
+  return mutil.round(self:calculateRatio() * 100, 1)
 end
 
-function round(num, numDecimalPlaces)
-  if numDecimalPlaces and numDecimalPlaces>0 then
-    local mult = 10^numDecimalPlaces
-    return math.floor(num * mult + 0.5) / mult
-  end
-  return math.floor(num + 0.5)
-end
+return mgui
 
