@@ -42,7 +42,7 @@ local files =
     '/lib/inifile.lua'
   },
   {
-    'https://raw.githubusercontent.com/mard/oc-programs/master/frcs/usr/frcs',
+    'https://raw.githubusercontent.com/mard/oc-programs/master/frcs/usr/man/frcs',
     'usr/frcs',
     '/usr/frcs'
   },
