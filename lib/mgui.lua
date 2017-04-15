@@ -367,6 +367,7 @@ end
 
 function ProgressBar:calculateRatio()
   local amax, avalue = self.max - self.min, self.value - self.min
+  if amax == 0 then return 0 end
   return avalue / amax
 end
 
