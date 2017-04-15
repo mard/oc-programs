@@ -230,9 +230,11 @@ function rcDataRefresh()
     rcDataEnergy = provider.reactor_logic_adapter.getEnergy() * settings.general.energy_rate
     rcDataMaxEnergy = provider.reactor_logic_adapter.getMaxEnergy() * settings.general.energy_rate
     rcDataPlasmaHeat = provider.reactor_logic_adapter.getPlasmaHeat()
-    rcDataMaxPlasmaHeat = provider.reactor_logic_adapter.getMaxPlasmaHeat()
+    --rcDataMaxPlasmaHeat = provider.reactor_logic_adapter.getMaxPlasmaHeat()
+    rcDataMaxPlasmaHeat = 600000000
     rcDataCaseHeat = provider.reactor_logic_adapter.getCaseHeat()
-    rcDataMaxCaseHeat = provider.reactor_logic_adapter.getMaxCaseHeat()
+    --rcDataMaxCaseHeat = provider.reactor_logic_adapter.getMaxCaseHeat()
+    rcDataMaxCaseHeat = 500000000
   end
 end
 
