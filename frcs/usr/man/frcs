@@ -1,0 +1,32 @@
+NAME
+  frcs - Fusion Reactor Control System
+
+SYNOPSIS
+  frcs
+
+DESCRIPTION
+  frcs is an interactive GUI application that allows for controlling and monitoring Mekanism Fusion Reactor and its peripherials.
+
+  frcs comes with following features:
+
+  - Displays input, output and charge levels of Induction Matrix attached to Fusion Reactor
+  - Displays Laser Amplifier charge level, allows firing laser charge,
+  - Allows for automatic cutoff of Mekanism cable when Laser Amplifier is fully charged
+  - Displays details of Reactor Chamber
+  - Allows to block Laser Amplifier fire when it's fully charged
+
+  frcs can be configured by editing /etc/frcs.conf:
+
+  edit /etc/frcs.conf
+
+  Possible options and values are described inside that file.
+
+REPORTING BUGS
+  Bugs, issues, suggestions should be reported at: <https://github.com/mard/oc-programs>.
+
+COPYRIGHT
+  frcs is released into public domain by the copyright holder under WTFPL.
+
+THIRD-PARTY SOFTWARE
+  30log
+  inifile
