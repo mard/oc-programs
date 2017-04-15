@@ -391,7 +391,7 @@ function sendLaPowered(cut)
     return
   end
   for k,v in ipairs(sides) do
-    laControlPower.setOutput(k, cut and 255 or 0)
+    laControlPower.setOutput(k-1, cut and 255 or 0)
   end
 end
 
@@ -413,11 +413,11 @@ function fire()
     return
   end
   for k,v in ipairs(sides) do
-    laControl.setOutput(k, 255)
+    laControl.setOutput(k-1, 255)
   end
   os.sleep(0.1)
   for k,v in ipairs(sides) do
-    laControl.setOutput(k, 0)
+    laControl.setOutput(k-1, 0)
   end
 end
 
