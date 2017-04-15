@@ -1,91 +1,3 @@
---[[
-
-NAME
-  frcs - Fusion Reactor Control System
-
-SYNOPSIS
-  frcs
-
-DESCRIPTION
-  frcs is an interactive GUI application that allows for controlling and monitoring Mekanism Fusion Reactor and its peripherials.
-
-  frcs comes with following features:
-
-  - Input, Output and Induction Matrix attached to Fusion Reactor
-  - Laser Amplifier charge level, firing laser charge,
-  - Automatic cutoff of Mekanism cable when Laser Amplifier is fully charged
-  - Details of Reactor Chamber operation
-  - Blocking of firing 
-
-  frcs can be configured by editing /etc/frcs.conf. Possible options and values are described inside that file. It can be edited by typing:
-
-  `edit /etc/frcs.conf`
-
-LICENSE
-  
-REPORTING BUGS
-  Bugs, issues, suggestions should be reported at: <https://github.com>.
-
-COPYRIGHT
-  frcs is released into public domain by the copyright holder under WTFPL.
-
-
-]]
-
--- FRCS: Fusion Reactor Control System
-
--- charge of laser amp
--- fire laser amp
-
--- turn off laser amp charging
--- induction cube
-
-
---[[
-
-Induction Matrix:
-GetInput
-8758.9238372803 RF/t (potentially the same as get producing)
-
-GetOutput
-n/d
-8489 RF/t
-
-GetEnergy
-25600000000 (25.59 GRF)
-
-GetMaxEnergy
-25600000000 (25.59 GRF)
-
-Laser Amplifier:
-getEnergy
-79368000 RF
-
-getMaxEnergy
-2000000000 (2 GRF)
-
-
-
-
-
-
-Reactor
-Status: Ignited |  isIgnited
-
-getEnergy / 2.5
-400000000 RF
-
-getInjectionRate
-0, 2, 4 etc.
-
-getProducing / 2.5
-217886.92356348
-
-
-
-]]
-
-
 local colors = require('colors')
 local component = require('component')
 local computer = require('computer')
@@ -93,14 +5,12 @@ local event = require('event')
 local filesystem = require('filesystem')
 local sides = require('sides')
 local term = require('term')
+local gpu = term.gpu()
 
 genericSharedLibraryError = 'Unable to find shared library.'
 genericInstallError = ' ' .. 
 'It appears that installation is invalid - have you run ' ..
 '"setup" command for this program?'
-
-
---local class = require('30log')
 
 package.loaded.mgui = nil
 assert(filesystem.exists('/lib/mgui.lua'),
@@ -111,10 +21,6 @@ package.loaded.mutil = nil
 assert(filesystem.exists('/lib/mutil.lua'),
   genericSharedLibraryError .. genericInstallError )
 local mutil = require('mutil')
-
-local gpu = term.gpu()
-
-
 
 assert(filesystem.exists('/lib/inifile.lua'),
   'Unable to find inifile library.' .. genericInstallError
@@ -378,6 +284,7 @@ function handleFire()
   end
   if rcDataRate == 0 then laFire:disable() else laFire:enable() end
   laFire:refresh()
+  laFire:draw()
 end
 
 function handleLaPower()
@@ -500,9 +407,6 @@ while running do
     if touched.onTouch then
       touched:doTouch()
     end
-    --component.gpu.set(x, y, 'x')
-  elseif id == "drag" then
-    --component.gpu.set(x, y, '.')
   end
 end
 
